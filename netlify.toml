@@ -1,0 +1,10 @@
+# Netlify config for the standalone trading auto-pilot app (repo root = Flutter app).
+# Set DATA_BASE_URL and TRADING_BASE_URL in Netlify env to your backend URL.
+[build]
+  command = "bash netlify_build.sh"
+  publish = "build/web"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
