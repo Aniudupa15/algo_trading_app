@@ -17,6 +17,24 @@ class TradingApi {
     return Account.fromJson((data as Map).cast<String, dynamic>());
   }
 
+  // --- Monthly Momentum Portfolio (the validated factor) ---
+
+  Future<List<MomentumPick>> momentumRanking({int top = 30}) async {
+    final data = await _client.get('/trading/momentum/ranking?top=$top');
+    final list = (data as Map)['picks'] as List;
+    return list.map((e) => MomentumPick.fromJson((e as Map).cast<String, dynamic>())).toList();
+  }
+
+  Future<Map<String, dynamic>> momentumRebalance(String accountId, {int top = 30}) async {
+    final data = await _client.post('/trading/accounts/$accountId/momentum/rebalance?top=$top');
+    return (data as Map).cast<String, dynamic>();
+  }
+
+  Future<Map<String, dynamic>> momentumPortfolio(String accountId) async {
+    final data = await _client.get('/trading/accounts/$accountId/momentum/portfolio');
+    return (data as Map).cast<String, dynamic>();
+  }
+
   Future<List<Strategy>> listStrategies() async {
     final data = await _client.get('/trading/strategies') as List;
     return data.map((e) => Strategy.fromJson((e as Map).cast<String, dynamic>())).toList();

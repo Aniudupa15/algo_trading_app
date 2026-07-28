@@ -5,10 +5,10 @@ import '../models/models.dart';
 import '../services/auth_service.dart';
 import '../services/trading_api.dart';
 import 'account_detail_screen.dart';
-import 'autopilot_screen.dart';
 import 'backtest_screen.dart';
 import 'broker_screen.dart';
 import 'login_screen.dart';
+import 'momentum_screen.dart';
 import 'strategies_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -122,7 +122,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: ListTile(
                     leading: CircleAvatar(child: Text(a.mode == 'LIVE' ? 'L' : 'P')),
                     title: Text('${a.mode} account'),
-                    subtitle: Text('Balance: ${_money.format(a.virtualBalance ?? 0)}  ·  tap for Auto-Pilot'),
+                    subtitle: Text('Balance: ${_money.format(a.virtualBalance ?? 0)}  ·  tap for Momentum Portfolio'),
                     trailing: IconButton(
                       icon: const Icon(Icons.analytics_outlined),
                       tooltip: 'Account detail',
@@ -131,7 +131,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => AutoPilotScreen(account: a)),
+                      MaterialPageRoute(builder: (_) => MomentumScreen(account: a)),
                     ),
                   ),
                 );

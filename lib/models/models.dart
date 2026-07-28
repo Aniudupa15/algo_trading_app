@@ -89,6 +89,21 @@ class Candidate {
       );
 }
 
+class MomentumPick {
+  MomentumPick({required this.symbol, required this.name, required this.trailingReturnPct, required this.lastClose});
+  final String symbol;
+  final String name;
+  final double trailingReturnPct;
+  final double lastClose;
+
+  factory MomentumPick.fromJson(Map<String, dynamic> j) => MomentumPick(
+        symbol: j['symbol'] as String,
+        name: (j['name'] ?? '') as String,
+        trailingReturnPct: _d(j['trailing_return_pct']) ?? 0,
+        lastClose: _d(j['last_close']) ?? 0,
+      );
+}
+
 class EquityPoint {
   EquityPoint({required this.ts, required this.equity});
   final DateTime ts;
