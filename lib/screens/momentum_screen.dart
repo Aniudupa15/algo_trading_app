@@ -6,7 +6,7 @@ import '../services/trading_api.dart';
 import '../theme.dart';
 
 /// Monthly Momentum Portfolio - the validated cross-sectional edge.
-/// Rank the liquid universe by 30-day return, hold the top 30, rebalance monthly.
+/// Rank the liquid universe by 30-day return, hold the top 10, rebalance monthly.
 class MomentumScreen extends StatefulWidget {
   const MomentumScreen({super.key, required this.account});
   final Account account;
@@ -32,7 +32,7 @@ class _MomentumScreenState extends State<MomentumScreen> {
   Future<void> _load() async {
     setState(() => _loading = true);
     try {
-      final results = await Future.wait([_api.momentumRanking(top: 30), _api.momentumPortfolio(widget.account.id)]);
+      final results = await Future.wait([_api.momentumRanking(top: 10), _api.momentumPortfolio(widget.account.id)]);
       setState(() {
         _picks = results[0] as List<MomentumPick>;
         _portfolio = results[1] as Map<String, dynamic>;
@@ -50,7 +50,7 @@ class _MomentumScreenState extends State<MomentumScreen> {
       _message = null;
     });
     try {
-      final res = await _api.momentumRebalance(widget.account.id, top: 30);
+      final res = await _api.momentumRebalance(widget.account.id, top: 10);
       setState(() => _message = 'Rebalanced: sold ${(res['sold'] as List).length}, bought ${(res['bought'] as List).length}. '
           'Portfolio ₹${res['portfolio_value']}');
       await _load();
@@ -80,7 +80,7 @@ class _MomentumScreenState extends State<MomentumScreen> {
               icon: _rebalancing
                   ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.sync),
-              label: Text(holdings.isEmpty ? 'Build portfolio (buy this month\'s top 30)' : 'Rebalance into this month\'s picks'),
+              label: Text(holdings.isEmpty ? 'Build portfolio (buy this month\'s top 10)' : 'Rebalance into this month\'s picks'),
             ),
             if (_message != null) Padding(padding: const EdgeInsets.symmetric(vertical: 8), child: Text(_message!)),
             const SizedBox(height: 8),
@@ -90,7 +90,7 @@ class _MomentumScreenState extends State<MomentumScreen> {
               ...holdings.map((h) => _holdingTile(h as Map<String, dynamic>)),
               const Divider(height: 32),
             ],
-            Text("This month's picks (30-day momentum)", style: Theme.of(context).textTheme.titleMedium),
+            Text("This month's top 10 (30-day momentum)", style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
             if (_loading)
               const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator())),
@@ -106,7 +106,7 @@ class _MomentumScreenState extends State<MomentumScreen> {
         child: const Padding(
           padding: EdgeInsets.all(12),
           child: Text(
-            'Paper money. Ranks the liquid market by 30-day return and holds the top 30, rebalanced monthly — '
+            'Paper money. Ranks the liquid market by 30-day return and holds the top 10, rebalanced monthly — '
             'a factor that beat the market across 6+ years of testing. But: bumpy month to month, and past '
             'results carry survivorship-bias caveats. Not investment advice.',
             style: TextStyle(fontSize: 12),
@@ -116,7 +116,7 @@ class _MomentumScreenState extends State<MomentumScreen> {
 
   Widget _portfolioCard(Map<String, dynamic> p) {
     final total = (p['total_value'] as num?)?.toDouble() ?? 0;
-    final start = widget.account.startingBalance ?? 1000000;
+    final start = widget.account.startingBalance ?? 100000;
     final pnl = total - start;
     return Card(
       child: Padding(
