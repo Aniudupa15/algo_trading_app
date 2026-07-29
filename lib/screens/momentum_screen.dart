@@ -116,7 +116,7 @@ class _MomentumScreenState extends State<MomentumScreen> {
 
   Widget _portfolioCard(Map<String, dynamic> p) {
     final total = (p['total_value'] as num?)?.toDouble() ?? 0;
-    final start = widget.account.startingBalance ?? 100000;
+    final start = widget.account.startingBalance ?? 10000;
     final pnl = total - start;
     return Card(
       child: Padding(

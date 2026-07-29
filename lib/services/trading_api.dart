@@ -12,7 +12,7 @@ class TradingApi {
     return data.map((e) => Account.fromJson((e as Map).cast<String, dynamic>())).toList();
   }
 
-  Future<Account> createAccount({String mode = 'PAPER', double startingBalance = 100000}) async {
+  Future<Account> createAccount({String mode = 'PAPER', double startingBalance = 10000}) async {
     final data = await _client.post('/trading/accounts', body: {'mode': mode, 'starting_balance': startingBalance.toString()});
     return Account.fromJson((data as Map).cast<String, dynamic>());
   }
