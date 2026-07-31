@@ -8,15 +8,22 @@ class Account {
   final double? startingBalance;
 
   factory Account.fromJson(Map<String, dynamic> j) => Account(
-        id: j['id'] as String,
-        mode: j['mode'] as String,
-        virtualBalance: _d(j['virtual_balance']),
-        startingBalance: _d(j['starting_balance']),
-      );
+    id: j['id'] as String,
+    mode: j['mode'] as String,
+    virtualBalance: _d(j['virtual_balance']),
+    startingBalance: _d(j['starting_balance']),
+  );
 }
 
 class Strategy {
-  Strategy({required this.id, required this.name, required this.side, required this.product, required this.status, required this.quantity});
+  Strategy({
+    required this.id,
+    required this.name,
+    required this.side,
+    required this.product,
+    required this.status,
+    required this.quantity,
+  });
   final String id;
   final String name;
   final String side;
@@ -25,13 +32,13 @@ class Strategy {
   final int quantity;
 
   factory Strategy.fromJson(Map<String, dynamic> j) => Strategy(
-        id: j['id'] as String,
-        name: j['name'] as String,
-        side: j['side'] as String,
-        product: j['product'] as String,
-        status: j['status'] as String,
-        quantity: j['quantity'] as int,
-      );
+    id: j['id'] as String,
+    name: j['name'] as String,
+    side: j['side'] as String,
+    product: j['product'] as String,
+    status: j['status'] as String,
+    quantity: j['quantity'] as int,
+  );
 }
 
 class BacktestResult {
@@ -42,15 +49,22 @@ class BacktestResult {
   final Map<String, dynamic> metrics;
 
   factory BacktestResult.fromJson(Map<String, dynamic> j) => BacktestResult(
-        symbol: j['symbol'] as String,
-        finalEquity: _d(j['final_equity']) ?? 0,
-        bars: j['bars'] as int,
-        metrics: (j['metrics'] as Map).cast<String, dynamic>(),
-      );
+    symbol: j['symbol'] as String,
+    finalEquity: _d(j['final_equity']) ?? 0,
+    bars: j['bars'] as int,
+    metrics: (j['metrics'] as Map).cast<String, dynamic>(),
+  );
 }
 
 class Trade {
-  Trade({required this.symbol, required this.qty, required this.entryPrice, required this.exitPrice, required this.pnlNet, required this.exitReason});
+  Trade({
+    required this.symbol,
+    required this.qty,
+    required this.entryPrice,
+    required this.exitPrice,
+    required this.pnlNet,
+    required this.exitReason,
+  });
   final String symbol;
   final int qty;
   final double entryPrice;
@@ -59,17 +73,25 @@ class Trade {
   final String? exitReason;
 
   factory Trade.fromJson(Map<String, dynamic> j) => Trade(
-        symbol: j['symbol'] as String,
-        qty: j['qty'] as int,
-        entryPrice: _d(j['entry_price']) ?? 0,
-        exitPrice: _d(j['exit_price']) ?? 0,
-        pnlNet: _d(j['pnl_net']) ?? 0,
-        exitReason: j['exit_reason'] as String?,
-      );
+    symbol: j['symbol'] as String,
+    qty: j['qty'] as int,
+    entryPrice: _d(j['entry_price']) ?? 0,
+    exitPrice: _d(j['exit_price']) ?? 0,
+    pnlNet: _d(j['pnl_net']) ?? 0,
+    exitReason: j['exit_reason'] as String?,
+  );
 }
 
 class Candidate {
-  Candidate({required this.symbol, required this.name, required this.signal, required this.confidence, this.entry, this.target, this.stopLoss});
+  Candidate({
+    required this.symbol,
+    required this.name,
+    required this.signal,
+    required this.confidence,
+    this.entry,
+    this.target,
+    this.stopLoss,
+  });
   final String symbol;
   final String name;
   final String signal;
@@ -79,29 +101,47 @@ class Candidate {
   final double? stopLoss;
 
   factory Candidate.fromJson(Map<String, dynamic> j) => Candidate(
-        symbol: j['symbol'] as String,
-        name: (j['name'] ?? '') as String,
-        signal: j['signal'] as String,
-        confidence: _d(j['confidence']) ?? 0,
-        entry: _d(j['entry']),
-        target: _d(j['target']),
-        stopLoss: _d(j['stop_loss']),
-      );
+    symbol: j['symbol'] as String,
+    name: (j['name'] ?? '') as String,
+    signal: j['signal'] as String,
+    confidence: _d(j['confidence']) ?? 0,
+    entry: _d(j['entry']),
+    target: _d(j['target']),
+    stopLoss: _d(j['stop_loss']),
+  );
 }
 
 class MomentumPick {
-  MomentumPick({required this.symbol, required this.name, required this.trailingReturnPct, required this.lastClose});
+  MomentumPick({
+    required this.symbol,
+    required this.name,
+    required this.trailingReturnPct,
+    required this.lastClose,
+    this.signal = 'BUY',
+    this.holdPeriod = '~1 month',
+    this.confidenceRaw,
+  });
   final String symbol;
   final String name;
   final double trailingReturnPct;
   final double lastClose;
 
+  // Recommendation fields from the backend; signal/hold are constant for this
+  // long-only monthly strategy, confidence is a rank-based tilt (nullable so an
+  // older backend that omits it falls back to a client-side value in the tile).
+  final String signal;
+  final String holdPeriod;
+  final int? confidenceRaw;
+
   factory MomentumPick.fromJson(Map<String, dynamic> j) => MomentumPick(
-        symbol: j['symbol'] as String,
-        name: (j['name'] ?? '') as String,
-        trailingReturnPct: _d(j['trailing_return_pct']) ?? 0,
-        lastClose: _d(j['last_close']) ?? 0,
-      );
+    symbol: j['symbol'] as String,
+    name: (j['name'] ?? '') as String,
+    trailingReturnPct: _d(j['trailing_return_pct']) ?? 0,
+    lastClose: _d(j['last_close']) ?? 0,
+    signal: (j['signal'] as String?) ?? 'BUY',
+    holdPeriod: (j['hold_period'] as String?) ?? '~1 month',
+    confidenceRaw: (j['confidence'] as num?)?.toInt(),
+  );
 }
 
 class EquityPoint {
@@ -109,10 +149,8 @@ class EquityPoint {
   final DateTime ts;
   final double equity;
 
-  factory EquityPoint.fromJson(Map<String, dynamic> j) => EquityPoint(
-        ts: DateTime.parse(j['ts'] as String),
-        equity: _d(j['equity']) ?? 0,
-      );
+  factory EquityPoint.fromJson(Map<String, dynamic> j) =>
+      EquityPoint(ts: DateTime.parse(j['ts'] as String), equity: _d(j['equity']) ?? 0);
 }
 
 class BrokerStatus {
@@ -121,11 +159,8 @@ class BrokerStatus {
   final bool connected;
   final String status;
 
-  factory BrokerStatus.fromJson(Map<String, dynamic> j) => BrokerStatus(
-        broker: j['broker'] as String,
-        connected: j['connected'] as bool,
-        status: j['status'] as String,
-      );
+  factory BrokerStatus.fromJson(Map<String, dynamic> j) =>
+      BrokerStatus(broker: j['broker'] as String, connected: j['connected'] as bool, status: j['status'] as String);
 }
 
 double? _d(dynamic v) => v == null ? null : (v is num ? v.toDouble() : double.tryParse(v.toString()));
